@@ -24,7 +24,7 @@ export class ProducerService {
   async getData() {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const result = await this.client
-      .send({ cmd: 'get_data' }, { info: 'درخواست از اپ B' })
+      .send({ cmd: 'ping' }, { data: [1, 2, 3, 4, 5] })
       .toPromise();
     return result;
   }

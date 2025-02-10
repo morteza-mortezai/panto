@@ -10,7 +10,7 @@ async function bootstrap() {
     transport: Transport.RMQ,
     options: {
       urls: ['amqp://localhost:5672'], // آدرس سرور RabbitMQ
-      queue: 'my_queue', // نام صف مورد استفاده
+      queue: 'xray', // نام صف مورد استفاده
       queueOptions: {
         durable: false, // برای سادگی، در این مثال از صف‌های غیر پایدار استفاده می‌کنیم
       },

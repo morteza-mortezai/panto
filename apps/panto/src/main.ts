@@ -5,14 +5,13 @@ import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  // اتصال میکروسرویس با RabbitMQ
   app.connectMicroservice<MicroserviceOptions>({
     transport: Transport.RMQ,
     options: {
-      urls: ['amqp://localhost:5672'], // آدرس سرور RabbitMQ
-      queue: 'xray', // نام صف مورد استفاده
+      urls: ['amqp://localhost:5672'],
+      queue: 'xray',
       queueOptions: {
-        durable: false, // برای سادگی، در این مثال از صف‌های غیر پایدار استفاده می‌کنیم
+        durable: false,
       },
     },
   });

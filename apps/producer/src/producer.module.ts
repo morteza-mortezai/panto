@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ProducerController } from './producer.controller';
 import { ProducerService } from './producer.service';
-import { ClientsModule } from '@nestjs/microservices';
+import { ClientsModule, Transport } from '@nestjs/microservices';
 
 @Module({
   imports: [

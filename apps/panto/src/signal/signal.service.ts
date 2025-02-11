@@ -15,7 +15,9 @@ export class SignalService {
     const createdSignal = new this.signalModel(createSignalDto);
     return createdSignal.save();
   }
-
+  createMany(createSignalDtos: CreateSignalDto[]) {
+    return this.signalModel.insertMany(createSignalDtos);
+  }
   async findAll(): Promise<Signal[]> {
     return this.signalModel.find().exec();
   }

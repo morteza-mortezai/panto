@@ -1,14 +1,14 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
-import { IsNotEmpty, IsMongoId, IsDateString, IsNumber } from 'class-validator';
+import { IsNotEmpty, IsString, IsNumber } from 'class-validator';
 
 export class CreateSignalDto {
   @IsNotEmpty()
-  @IsMongoId()
-  device_id: string;
+  @IsString()
+  xray_id: string;
 
   @IsNotEmpty()
-  @IsDateString()
-  time: string;
+  @IsNumber()
+  time: number;
 
   @IsNotEmpty()
   @IsNumber()

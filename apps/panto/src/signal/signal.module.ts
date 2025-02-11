@@ -10,5 +10,6 @@ import { SignalSchema, Signal } from './schema/signal.schema';
   ],
   controllers: [SignalController],
   providers: [SignalService],
+  exports: [SignalService],
 })
 export class SignalModule {}

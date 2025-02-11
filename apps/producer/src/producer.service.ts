@@ -23,6 +23,6 @@ export class ProducerService {
 
   produceXrayData() {
     // Emit an event with the pattern { cmd: 'x_ray' } and payload { data: xray }
-    return this.client.emit({ cmd: 'scan' }, { data: xray });
+    return this.client.emit({ cmd: 'scan' }, xray);
   }
 }

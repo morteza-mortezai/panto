@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import { SignalModule } from './signal/signal.module';
 import { XrayModule } from './xray/xray.module';
@@ -10,7 +9,7 @@ import { XrayModule } from './xray/xray.module';
     SignalModule,
     XrayModule,
   ],
-  controllers: [AppController],
+  controllers: [],
   providers: [],
 })
 export class AppModule {}

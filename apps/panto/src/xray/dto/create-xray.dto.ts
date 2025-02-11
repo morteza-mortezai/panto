@@ -8,5 +8,5 @@ export class CreateXrayDto {
 
   @IsNotEmpty()
   @IsDateString()
-  time: string;
+  time: number;
 }

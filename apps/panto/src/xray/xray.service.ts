@@ -1,11 +1,17 @@
 import { Injectable } from '@nestjs/common';
 import { CreateXrayDto } from './dto/create-xray.dto';
 import { UpdateXrayDto } from './dto/update-xray.dto';
+import { InjectModel } from '@nestjs/mongoose';
+import { Xray, XrayDocument } from './schema/xray.schema';
+import { Model } from 'mongoose';
 
 @Injectable()
 export class XrayService {
-  create(createXrayDto: CreateXrayDto) {
-    return 'This action adds a new xray';
+  constructor(@InjectModel(Xray.name) private xrayModel: Model<XrayDocument>) {}
+
+  async create(createXrayDto: CreateXrayDto) {
+    const createdRecord = await this.xrayModel.create(createXrayDto);
+    return createdRecord.save();
   }
 
   findAll() {

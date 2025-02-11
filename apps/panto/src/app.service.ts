@@ -25,4 +25,5 @@ export class AppService {
     // ارسال پیام با الگوی { cmd: 'ping' } به میکروسرویس
     return this.client.send({ cmd: 'ping' }, message).toPromise();
   }
+
 }

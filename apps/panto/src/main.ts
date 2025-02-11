@@ -1,6 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
+import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -15,8 +16,9 @@ async function bootstrap() {
       },
     },
   });
+  app.useGlobalPipes(new ValidationPipe());
 
-  await app.startAllMicroservices(); // راه‌اندازی تمام میکروسرویس‌های متصل
+  await app.startAllMicroservices();
   await app.listen(3000);
   console.log('Application is running on port 3000');
 }

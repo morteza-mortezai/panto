@@ -8,7 +8,7 @@ import {
   // Delete,
 } from '@nestjs/common';
 import { XrayService } from './xray.service';
-import { PocessXrayService } from './process-xray.service';
+import { ProcessXrayService } from './process-xray.service';
 // import { CreateXrayDto } from './dto/create-xray.dto';
 import { EventPattern, Payload } from '@nestjs/microservices';
 import { MeasurementDto } from './dto/measurement.dto';
@@ -19,15 +19,12 @@ export class XrayController {
 
   constructor(
     private readonly xrayService: XrayService,
-    private readonly pocessXrayService: PocessXrayService,
+    private readonly processXrayService: ProcessXrayService,
   ) {}
 
   @EventPattern({ cmd: 'scan' })
-  handlePing(@Payload() measurementDto: MeasurementDto) {
-    // this.logger.log(
-    //   'Received measurementDto: ' + JSON.stringify(measurementDto),
-    // );
-    this.pocessXrayService.processSignal(measurementDto);
+  handleScan(@Payload() measurementDto: MeasurementDto) {
+    return this.processXrayService.processSignal(measurementDto);
   }
 
   // @Get()

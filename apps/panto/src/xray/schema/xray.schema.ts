@@ -6,10 +6,16 @@ export type XrayDocument = HydratedDocument<Xray>;
 @Schema()
 export class Xray {
   @Prop({ required: true })
-  device_id: string;
+  deviceId: string;
 
   @Prop({ required: true })
-  time: Date;
+  time: number;
+
+  @Prop({ required: true })
+  dataVolume: number;
+
+  @Prop({ required: true })
+  dataLength: number;
 }
 
 export const XraySchema = SchemaFactory.createForClass(Xray);

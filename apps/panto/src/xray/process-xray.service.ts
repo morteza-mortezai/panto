@@ -14,14 +14,23 @@ export class PocessXrayService {
   async processSignal(measurementDto: MeasurementDto) {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 
-    const device_id = Object.keys(measurementDto)[0];
-    if (!device_id) throw new BadRequestException('Device Id is not provided');
-    const time = measurementDto[device_id].time;
+    const deviceId = Object.keys(measurementDto)[0];
+    if (!deviceId) throw new BadRequestException('Device Id is not provided');
+    const time = measurementDto[deviceId].time;
     if (!time) throw new BadRequestException('Time is not provided');
+    const data = measurementDto[deviceId].data;
 
-    const xray = await this.xrayService.create({ device_id, time });
+    const dataLength = data.length;
+    console.log(dataLength)
+    const dataVolume = Buffer.byteLength(JSON.stringify(data), 'utf8');
 
-    const data = measurementDto[device_id].data;
+    const xray = await this.xrayService.create({
+      deviceId,
+      time,
+      dataLength,
+      dataVolume,
+    });
+
     const d = data.map((d) => ({
       xray_id: xray._id.toString(),
       time: d[0],

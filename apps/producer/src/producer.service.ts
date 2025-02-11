@@ -1,10 +1,10 @@
-// در اپلیکیشن B: data.service.ts
 import { Injectable } from '@nestjs/common';
 import {
   ClientProxy,
   ClientProxyFactory,
   Transport,
 } from '@nestjs/microservices';
+import xray from './x-ray';
 
 @Injectable()
 export class ProducerService {
@@ -15,17 +15,14 @@ export class ProducerService {
       transport: Transport.RMQ,
       options: {
         urls: ['amqp://localhost:5672'],
-        queue: 'my_queue',
+        queue: 'x_ray',
         queueOptions: { durable: false },
       },
     });
   }
 
-  async getData() {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    const result = await this.client
-      .send({ cmd: 'ping' }, { data: [1, 2, 3, 4, 5] })
-      .toPromise();
-    return result;
+  produceXrayData() {
+    // Emit an event with the pattern { cmd: 'x_ray' } and payload { data: xray }
+    return this.client.emit({ cmd: 'scan' }, { data: xray });
   }
 }

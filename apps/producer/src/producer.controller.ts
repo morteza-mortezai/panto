@@ -5,8 +5,8 @@ import { ProducerService } from './producer.service';
 export class ProducerController {
   constructor(private readonly producerService: ProducerService) {}
 
-  @Get()
-  getHello() {
-    return this.producerService.getData();
+  @Get('start')
+  produceData() {
+    return this.producerService.produceXrayData();
   }
 }

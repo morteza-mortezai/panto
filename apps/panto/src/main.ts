@@ -9,7 +9,7 @@ async function bootstrap() {
   app.connectMicroservice<MicroserviceOptions>({
     transport: Transport.RMQ,
     options: {
-      urls: ['amqp://localhost:5672'],
+      urls: ['amqp://rabbitmq:5672'],
       queue: 'x_ray',
       queueOptions: {
         durable: false,
@@ -19,7 +19,7 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe());
 
   await app.startAllMicroservices();
-  await app.listen(3000);
-  console.log('Application is running on port 3000');
+  await app.listen(3001);
+  console.log('Panto is running on port 3001');
 }
 bootstrap();

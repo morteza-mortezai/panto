@@ -1,0 +1,50 @@
+version: "3.8"
+
+services:
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    ports:
+      - "5672:5672"      # AMQP port
+      - "15672:15672"    # Management console
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+
+  mongodb:
+    image: mongo:4.4
+    container_name: mongodb
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+
+  panto:
+    build:
+      context: .
+      dockerfile: apps/panto/Dockerfile.panto
+    ports:
+      - "3001:3001"
+    environment:
+      NODE_ENV: production
+      RABBITMQ_URL: amqp://rabbitmq:5672
+      MONGODB_URI: mongodb://mongodb:27017/yourdbname
+    depends_on:
+      - mongodb
+      - rabbitmq
+
+  producer:
+    build:
+      context: .
+      dockerfile: apps/producer/Dockerfile.producer
+    ports:
+      - "3002:3002"
+    environment:
+      NODE_ENV: production
+      RABBITMQ_URL: amqp://rabbitmq:5672
+    depends_on:
+      - rabbitmq
+
+volumes:
+  mongo-data:
+

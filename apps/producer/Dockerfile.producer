@@ -1,0 +1,78 @@
+FROM node:16-alpine AS builder
+WORKDIR /usr/src/app
+COPY package*.json ./
+RUN npm install
+
+COPY . .
+
+RUN npm run build producer
+
+FROM node:16-alpine
+WORKDIR /usr/src/app
+COPY --from=builder /usr/src/app/dist/apps/producer ./dist
+COPY --from=builder /usr/src/app/package*.json ./
+RUN npm install --production
+EXPOSE 3002
+CMD ["node", "dist/main.js"]
+
+
+
+
+
+
+
+# # Use an official Node.js runtime as a parent image
+# FROM node:16-alpine
+
+# # Set the working directory
+# WORKDIR /usr/src/app
+
+# # Copy package.json and package-lock.json (if available)
+# COPY package*.json ./
+
+# # Install dependencies
+# RUN npm install 
+
+# # Copy the rest of your application code
+# COPY . .
+
+# # Build the NestJS application (adjust the command if needed)
+# RUN npm run build:producer
+
+# # Expose the port your app runs on (adjust as necessary)
+# EXPOSE 4000
+
+# # Start the application
+# CMD ["node", "dist/apps/producer/main.js"]
+
+
+
+
+# FROM node:alpine As development
+
+# WORKDIR /usr/src/app
+
+# COPY package*.json ./
+
+# RUN npm install
+
+# COPY . .
+
+# RUN npm run build auth
+
+# FROM node:alpine as production
+
+# ARG NODE_ENV=production
+# ENV NODE_ENV=${NODE_ENV}
+
+# WORKDIR /usr/src/app
+
+# COPY package*.json ./
+
+# RUN npm install --only=production
+
+# COPY . .
+
+# COPY --from=development /usr/src/app/dist ./dist
+
+# CMD ["node", "dist/apps/auth/main"]

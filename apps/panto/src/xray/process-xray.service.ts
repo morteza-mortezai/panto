@@ -12,8 +12,6 @@ export class ProcessXrayService {
     private readonly signalService: SignalService,
   ) {}
   async processSignal(measurementDto: MeasurementDto) {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-
     const deviceId = Object.keys(measurementDto)[0];
     const time = measurementDto[deviceId].time;
     const data = measurementDto[deviceId].data;

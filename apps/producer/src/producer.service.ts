@@ -1,28 +1,17 @@
-import { Injectable } from '@nestjs/common';
-import {
-  ClientProxy,
-  ClientProxyFactory,
-  Transport,
-} from '@nestjs/microservices';
+import { Inject, Injectable } from '@nestjs/common';
+import { ClientProxy } from '@nestjs/microservices';
 import xray from './x-ray';
 
 @Injectable()
 export class ProducerService {
-  private client: ClientProxy;
 
-  constructor() {
-    this.client = ClientProxyFactory.create({
-      transport: Transport.RMQ,
-      options: {
-        urls: ['amqp://rabbitmq:5672'],
-        queue: 'x_ray',
-        queueOptions: { durable: false },
-      },
-    });
-  }
+  constructor(
+    @Inject('PANTO_CLIENT')
+    private readonly client: ClientProxy,
+  ) {}
 
-  produceXrayData() {
-    // Emit an event with the pattern { cmd: 'x_ray' } and payload { data: xray }
+  async produceXrayData() {
+    await this.client.connect();
     return this.client.emit({ cmd: 'scan' }, xray);
   }
 }

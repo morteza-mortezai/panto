@@ -2,10 +2,10 @@ version: "3.8"
 
 services:
   rabbitmq:
-    image: rabbitmq:3-management-alpine
+    image: rabbitmq:3-management
     ports:
-      - "5672:5672"      # AMQP port
-      - "15672:15672"    # Management console
+      - "5672:5672"      
+      - "15672:15672"   
     environment:
       RABBITMQ_DEFAULT_USER: guest
       RABBITMQ_DEFAULT_PASS: guest
@@ -27,8 +27,9 @@ services:
       - "3001:3001"
     environment:
       NODE_ENV: production
-      RABBITMQ_URL: amqp://rabbitmq:5672
-      MONGODB_URI: mongodb://mongodb:27017/yourdbname
+      RABBITMQ_URI: amqp://rabbitmq:5672
+      MONGODB_URI: mongodb://mongodb:27017/panto
+      RABBITMQ_QUEUE: xray
     depends_on:
       - mongodb
       - rabbitmq
@@ -41,7 +42,8 @@ services:
       - "3002:3002"
     environment:
       NODE_ENV: production
-      RABBITMQ_URL: amqp://rabbitmq:5672
+      RABBITMQ_URI: amqp://rabbitmq:5672
+      RABBITMQ_QUEUE: xray
     depends_on:
       - rabbitmq
 

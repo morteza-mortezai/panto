@@ -1,9 +1,11 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { Injectable } from '@nestjs/common';
 import { CreateXrayDto } from './dto/create-xray.dto';
 import { UpdateXrayDto } from './dto/update-xray.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Xray, XrayDocument } from './schema/xray.schema';
 import { Model } from 'mongoose';
+import { GetXrayFilterDto } from './dto/get-xrays.filter.dto';
 
 @Injectable()
 export class XrayService {
@@ -14,19 +16,42 @@ export class XrayService {
     return createdRecord.save();
   }
 
-  findAll() {
-    return `This action returns all xray`;
+  async findAll(filters: GetXrayFilterDto) {
+    const query: any = {};
+
+    if (filters.from !== undefined || filters.to !== undefined) {
+      query.time = {};
+      if (filters.from !== undefined) query.time.$gte = filters.from;
+      if (filters.to !== undefined) query.time.$lte = filters.to;
+    }
+
+    if (filters.deviceId) {
+      query.deviceId = filters.deviceId;
+    }
+
+    if (
+      filters.minDataVolume !== undefined ||
+      filters.maxDataVolume !== undefined
+    ) {
+      query.dataVolume = {};
+      if (filters.minDataVolume !== undefined)
+        query.dataVolume.$gte = filters.minDataVolume;
+      if (filters.maxDataVolume !== undefined)
+        query.dataVolume.$lte = filters.maxDataVolume;
+    }
+
+    return await this.xrayModel.find(query).exec();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} xray`;
+  findOne(id: string) {
+    return this.xrayModel.findById(id).exec();
   }
 
-  update(id: number, updateXrayDto: UpdateXrayDto) {
-    return `This action updates a #${id} xray`;
+  update(id: string, updateXrayDto: UpdateXrayDto) {
+    return this.xrayModel.findByIdAndUpdate(id, updateXrayDto).exec();
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} xray`;
+  async remove(id: string) {
+    return await this.xrayModel.findByIdAndDelete(id).exec();
   }
 }

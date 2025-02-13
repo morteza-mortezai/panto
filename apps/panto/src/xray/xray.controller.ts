@@ -1,22 +1,23 @@
 import {
   Controller,
-  // Get,
-  // Post,
-  Logger,
-  // Patch,
-  // Param,
-  // Delete,
+  Get,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Query,
+  Post,
 } from '@nestjs/common';
 import { XrayService } from './xray.service';
 import { ProcessXrayService } from './process-xray.service';
-// import { CreateXrayDto } from './dto/create-xray.dto';
+import { CreateXrayDto } from './dto/create-xray.dto';
 import { EventPattern, Payload } from '@nestjs/microservices';
 import { MeasurementDto } from './dto/measurement.dto';
+import { UpdateXrayDto } from './dto/update-xray.dto';
+import { GetXrayFilterDto } from './dto/get-xrays.filter.dto';
 
 @Controller('xray')
 export class XrayController {
-  private readonly logger = new Logger(XrayController.name);
-
   constructor(
     private readonly xrayService: XrayService,
     private readonly processXrayService: ProcessXrayService,
@@ -27,23 +28,28 @@ export class XrayController {
     return this.processXrayService.processSignal(measurementDto);
   }
 
-  // @Get()
-  // findAll() {
-  //   return this.xrayService.findAll();
-  // }
+  @Post()
+  create(@Body() createXrayDto: CreateXrayDto) {
+    return this.xrayService.create(createXrayDto);
+  }
 
-  // @Get(':id')
-  // findOne(@Param('id') id: string) {
-  //   return this.xrayService.findOne(+id);
-  // }
+  @Get()
+  findAll(@Query() filters: GetXrayFilterDto) {
+    return this.xrayService.findAll(filters);
+  }
 
-  // @Patch(':id')
-  // update(@Param('id') id: string, @Body() updateXrayDto: UpdateXrayDto) {
-  //   return this.xrayService.update(+id, updateXrayDto);
-  // }
+  @Get(':id')
+  findOne(@Param('id') id: string) {
+    return this.xrayService.findOne(id);
+  }
 
-  // @Delete(':id')
-  // remove(@Param('id') id: string) {
-  //   return this.xrayService.remove(+id);
-  // }
+  @Patch(':id')
+  update(@Param('id') id: string, @Body() updateXrayDto: UpdateXrayDto) {
+    return this.xrayService.update(id, updateXrayDto);
+  }
+
+  @Delete(':id')
+  remove(@Param('id') id: string) {
+    return this.xrayService.remove(id);
+  }
 }

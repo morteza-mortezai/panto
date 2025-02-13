@@ -5,7 +5,7 @@ import { Type } from 'class-transformer';
 export class SignalMessageDto {
   @IsNotEmpty()
   @IsNumber()
-  measurementTime: number;
+  time: number;
 
   @IsNotEmpty()
   @IsNumber()

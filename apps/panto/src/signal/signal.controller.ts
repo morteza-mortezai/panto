@@ -6,10 +6,12 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { SignalService } from './signal.service';
 import { CreateSignalDto } from './dto/create-signal.dto';
 import { UpdateSignalDto } from './dto/update-signal.dto';
+import { SignalFilterDto } from './dto/signal-filter.dto';
 
 @Controller('signal')
 export class SignalController {
@@ -21,8 +23,8 @@ export class SignalController {
   }
 
   @Get()
-  async findAll() {
-    return await this.signalService.findAll();
+  async findAll(@Query() filters: SignalFilterDto) {
+    return await this.signalService.findAll(filters);
   }
 
   @Get(':id')

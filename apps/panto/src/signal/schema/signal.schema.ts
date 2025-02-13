@@ -6,7 +6,7 @@ export type SignalDocument = HydratedDocument<Signal>;
 @Schema()
 export class Signal {
   @Prop({ type: Types.ObjectId, ref: 'Xray', required: true })
-  xray_id: Types.ObjectId;
+  xrayId: Types.ObjectId;
 
   @Prop({ required: true })
   time: number;

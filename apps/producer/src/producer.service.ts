@@ -4,7 +4,6 @@ import xray from './x-ray';
 
 @Injectable()
 export class ProducerService {
-
   constructor(
     @Inject('PANTO_CLIENT')
     private readonly client: ClientProxy,
@@ -12,6 +11,7 @@ export class ProducerService {
 
   async produceXrayData() {
     await this.client.connect();
-    return this.client.emit({ cmd: 'scan' }, xray);
+    this.client.emit({ cmd: 'scan' }, xray);
+    return { message: 'Xray sample data was sent successfully' };
   }
 }

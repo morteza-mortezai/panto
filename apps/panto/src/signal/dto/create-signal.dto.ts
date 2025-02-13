@@ -4,7 +4,7 @@ import { IsNotEmpty, IsString, IsNumber } from 'class-validator';
 export class CreateSignalDto {
   @IsNotEmpty()
   @IsString()
-  xray_id: string;
+  xrayId: string;
 
   @IsNotEmpty()
   @IsNumber()

@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
-import { IsNotEmpty, IsString, IsNumber, IsDateString } from 'class-validator';
+import { IsNotEmpty, IsString, IsNumber, IsInt } from 'class-validator';
 
 export class CreateXrayDto {
   @IsNotEmpty()
@@ -7,7 +7,7 @@ export class CreateXrayDto {
   deviceId: string;
 
   @IsNotEmpty()
-  @IsDateString()
+  @IsInt()
   time: number;
 
   @IsNotEmpty()

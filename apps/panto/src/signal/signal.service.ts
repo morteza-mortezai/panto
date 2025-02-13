@@ -1,9 +1,11 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateSignalDto } from './dto/create-signal.dto';
 import { UpdateSignalDto } from './dto/update-signal.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Signal, SignalDocument } from './schema/signal.schema';
+import { SignalFilterDto } from './dto/signal-filter.dto';
 
 @Injectable()
 export class SignalService {
@@ -18,8 +20,55 @@ export class SignalService {
   createMany(createSignalDtos: CreateSignalDto[]) {
     return this.signalModel.insertMany(createSignalDtos);
   }
-  async findAll(): Promise<Signal[]> {
-    return this.signalModel.find().exec();
+
+  async findAll(filters: SignalFilterDto): Promise<Signal[]> {
+    const query: any = {};
+
+    // Filter for time
+    if (filters.timeFrom !== undefined || filters.timeTo !== undefined) {
+      query.time = {};
+      if (filters.timeFrom !== undefined) {
+        query.time.$gte = filters.timeFrom;
+      }
+      if (filters.timeTo !== undefined) {
+        query.time.$lte = filters.timeTo;
+      }
+    }
+
+    // Filter for x
+    if (filters.xFrom !== undefined || filters.xTo !== undefined) {
+      query.x = {};
+      if (filters.xFrom !== undefined) {
+        query.x.$gte = filters.xFrom;
+      }
+      if (filters.xTo !== undefined) {
+        query.x.$lte = filters.xTo;
+      }
+    }
+
+    // Filter for y
+    if (filters.yFrom !== undefined || filters.yTo !== undefined) {
+      query.y = {};
+      if (filters.yFrom !== undefined) {
+        query.y.$gte = filters.yFrom;
+      }
+      if (filters.yTo !== undefined) {
+        query.y.$lte = filters.yTo;
+      }
+    }
+
+    // Filter for speed
+    if (filters.speedFrom !== undefined || filters.speedTo !== undefined) {
+      query.speed = {};
+      if (filters.speedFrom !== undefined) {
+        query.speed.$gte = filters.speedFrom;
+      }
+      if (filters.speedTo !== undefined) {
+        query.speed.$lte = filters.speedTo;
+      }
+    }
+
+    return this.signalModel.find(query).exec();
   }
 
   async findOne(id: string): Promise<Signal> {
@@ -28,6 +77,10 @@ export class SignalService {
       throw new NotFoundException(`Signal with id ${id} not found`);
     }
     return signal;
+  }
+
+  async findByXrayId(xrayId: string) {
+    return this.signalModel.find({ xrayId });
   }
 
   async update(id: string, updateSignalDto: UpdateSignalDto): Promise<Signal> {
@@ -46,5 +99,15 @@ export class SignalService {
       throw new NotFoundException(`Signal with id ${id} not found`);
     }
     return deletedSignal;
+  }
+
+  async removeMany(xrayId: string) {
+    const result = await this.signalModel.deleteMany({ xrayId });
+
+    if (result.deletedCount === 0) {
+      throw new NotFoundException(`No signals found for xrayId ${xrayId}`);
+    }
+
+    return result;
   }
 }

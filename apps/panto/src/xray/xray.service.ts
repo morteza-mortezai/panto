@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateXrayDto } from './dto/create-xray.dto';
 import { UpdateXrayDto } from './dto/update-xray.dto';

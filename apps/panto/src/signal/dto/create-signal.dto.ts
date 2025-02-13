@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call */
 import { IsNotEmpty, IsString, IsNumber } from 'class-validator';
 
 export class CreateSignalDto {

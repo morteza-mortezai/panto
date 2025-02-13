@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateXrayDto } from './dto/create-xray.dto';
 import { UpdateXrayDto } from './dto/update-xray.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Xray, XrayDocument } from './schema/xray.schema';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { GetXrayFilterDto } from './dto/get-xrays.filter.dto';
 
 @Injectable()
@@ -43,8 +43,15 @@ export class XrayService {
     return await this.xrayModel.find(query).exec();
   }
 
-  findOne(id: string) {
-    return this.xrayModel.findById(id).exec();
+  async findOne(id: string) {
+    if (!Types.ObjectId.isValid(id)) {
+      throw new NotFoundException(`Signal with id ${id} not found`);
+    }
+    const xray = await this.xrayModel.findById(id).exec();
+    if (!xray) {
+      throw new NotFoundException(`Signal with id ${id} not found`);
+    }
+    return xray;
   }
 
   update(id: string, updateXrayDto: UpdateXrayDto) {

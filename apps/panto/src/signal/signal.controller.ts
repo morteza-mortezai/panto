@@ -28,8 +28,8 @@ export class SignalController {
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: string) {
-    return await this.signalService.findOne(id);
+  findOne(@Param('id') id: string) {
+    return this.signalService.findOne(id);
   }
 
   @Patch(':id')

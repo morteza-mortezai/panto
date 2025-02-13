@@ -3,7 +3,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateSignalDto } from './dto/create-signal.dto';
 import { UpdateSignalDto } from './dto/update-signal.dto';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { Signal, SignalDocument } from './schema/signal.schema';
 import { SignalFilterDto } from './dto/signal-filter.dto';
 
@@ -72,6 +72,9 @@ export class SignalService {
   }
 
   async findOne(id: string): Promise<Signal> {
+    if (!Types.ObjectId.isValid(id)) {
+      throw new NotFoundException(`Signal with id ${id} not found`);
+    }
     const signal = await this.signalModel.findById(id).exec();
     if (!signal) {
       throw new NotFoundException(`Signal with id ${id} not found`);

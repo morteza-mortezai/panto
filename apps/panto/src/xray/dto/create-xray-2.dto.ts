@@ -18,7 +18,6 @@ export class CreateXrayDto2 {
   @IsInt()
   time: number;
 
-  @IsNotEmpty()
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => SignalMessageDto)

@@ -16,7 +16,6 @@ export class SignalFilterDto {
   @ApiPropertyOptional({
     description: 'Maximum time filter',
     type: Number,
-    example: 5000,
   })
   @IsOptional()
   @Type(() => Number)
@@ -26,7 +25,6 @@ export class SignalFilterDto {
   @ApiPropertyOptional({
     description: 'Minimum x filter',
     type: Number,
-    example: 0,
   })
   @IsOptional()
   @Type(() => Number)
@@ -36,7 +34,6 @@ export class SignalFilterDto {
   @ApiPropertyOptional({
     description: 'Maximum x filter',
     type: Number,
-    example: 100,
   })
   @IsOptional()
   @Type(() => Number)
@@ -46,7 +43,6 @@ export class SignalFilterDto {
   @ApiPropertyOptional({
     description: 'Minimum y filter',
     type: Number,
-    example: 0,
   })
   @IsOptional()
   @Type(() => Number)
@@ -56,7 +52,6 @@ export class SignalFilterDto {
   @ApiPropertyOptional({
     description: 'Maximum y filter',
     type: Number,
-    example: 100,
   })
   @IsOptional()
   @Type(() => Number)
@@ -66,7 +61,6 @@ export class SignalFilterDto {
   @ApiPropertyOptional({
     description: 'Minimum speed filter',
     type: Number,
-    example: 10,
   })
   @IsOptional()
   @Type(() => Number)
@@ -76,7 +70,6 @@ export class SignalFilterDto {
   @ApiPropertyOptional({
     description: 'Maximum speed filter',
     type: Number,
-    example: 50,
   })
   @IsOptional()
   @Type(() => Number)

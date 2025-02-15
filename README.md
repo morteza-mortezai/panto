@@ -1,69 +1,210 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
-<div class="markdown prose w-full break-words dark:prose-invert light"><h1 data-start="81" data-end="121">PANTOhealth Test</h1><p data-start="123" data-end="251">This project is a NestJS microservice monorepo that processes x-ray data from IoT devices. It consists of two main applications:</p><ul data-start="253" data-end="490"><li data-start="253" data-end="343"><strong data-start="255" data-end="267">Producer</strong>: Simulates IoT devices by generating x-ray data and sending it to RabbitMQ.</li><li data-start="344" data-end="490"><strong data-start="346" data-end="355">Panto</strong>: Consumes x-ray data from RabbitMQ, processes and stores the data in MongoDB, and provides a REST API for data retrieval and analysis.</li></ul><hr data-start="492" data-end="495"><h2 data-start="497" data-end="517">Table of Contents</h2><ul data-start="519" data-end="966"><li data-start="519" data-end="558"><a data-start="521" data-end="558" rel="noopener" href="#project-overview">Project Overview</a></li><li data-start="559" data-end="590"><a data-start="561" data-end="590" rel="noopener" href="#architecture">Architecture</a></li><li data-start="591" data-end="618"><a data-start="593" data-end="618" rel="noopener" href="#components">Components</a></li><li data-start="619" data-end="644"><a data-start="621" data-end="644" rel="noopener" href="#data-flow">Data Flow</a></li><li data-start="645" data-end="678"><a data-start="647" data-end="678" rel="noopener" href="#prerequisites">Prerequisites</a></li><li data-start="679" data-end="806"><a data-start="681" data-end="712" rel="noopener" href="#setup-and-run">Setup and Run</a><ul data-start="715" data-end="806"><li data-start="715" data-end="762"><a data-start="717" data-end="762" rel="noopener" href="#using-docker-compose">Using Docker Compose</a></li><li data-start="765" data-end="806"><a data-start="767" data-end="806" rel="noopener" href="#local-development">Local Development</a></li></ul></li><li data-start="807" data-end="848"><a data-start="809" data-end="848" rel="noopener" href="#api-documentation">API Documentation</a></li><li data-start="849" data-end="890"><a data-start="851" data-end="890" rel="noopener" href="#project-structure">Project Structure</a></li><li data-start="891" data-end="944"><a data-start="893" data-end="944" rel="noopener" href="#assignment-requirements">Assignment Requirements</a></li><li data-start="945" data-end="966"><a data-start="947" data-end="966" rel="noopener" href="#license">License</a></li></ul><hr data-start="968" data-end="971"><h2 data-start="973" data-end="992">Project Overview</h2><p data-start="994" data-end="1346">This NestJS-based IoT Data Management System receives x-ray data messages sent by IoT devices, processes the information, and stores the results in a MongoDB collection. The processed data can then be accessed and analyzed via a RESTful API. RabbitMQ is used as the messaging backbone to decouple the data producer from the data processing application.</p><p data-start="1348" data-end="1377"><strong data-start="1348" data-end="1377">Sample x-ray data format:</strong></p><pre class="!overflow-visible" data-start="1379" data-end="1855"><div class="contain-inline-size rounded-md border-[0.5px] border-token-border-medium relative bg-token-sidebar-surface-primary dark:bg-gray-950"><div class="flex items-center text-token-text-secondary px-4 py-2 text-xs font-sans justify-between rounded-t-[5px] h-9 bg-token-sidebar-surface-primary dark:bg-token-main-surface-secondary select-none">json</div><div class="sticky top-9 md:top-[5.75rem]"><div class="absolute bottom-0 right-2 flex h-9 items-center"><div class="flex items-center rounded bg-token-sidebar-surface-primary px-2 font-sans text-xs text-token-text-secondary dark:bg-token-main-surface-secondary"><span class="" data-state="closed"></span><span class="" data-state="closed"></span></div></div></div><div class="overflow-y-auto p-4" dir="ltr"><code class="!whitespace-pre language-json"><span><span class="hljs-punctuation">{</span>
-  <span class="hljs-attr">"66bb584d4ae73e488c30a072"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span>
-    <span class="hljs-attr">"data"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span>
-      <span class="hljs-punctuation">[</span>
-        <span class="hljs-number">762</span><span class="hljs-punctuation">,</span>
-        <span class="hljs-punctuation">[</span>
-          <span class="hljs-number">51.339764</span><span class="hljs-punctuation">,</span>
-          <span class="hljs-number">12.339223833333334</span><span class="hljs-punctuation">,</span>
-          <span class="hljs-number">1.2038000000000002</span>
-        <span class="hljs-punctuation">]</span>
-      <span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
-      <span class="hljs-punctuation">[</span>
-        <span class="hljs-number">1766</span><span class="hljs-punctuation">,</span>
-        <span class="hljs-punctuation">[</span>
-          <span class="hljs-number">51.33977733333333</span><span class="hljs-punctuation">,</span>
-          <span class="hljs-number">12.339211833333334</span><span class="hljs-punctuation">,</span>
-          <span class="hljs-number">1.531604</span>
-        <span class="hljs-punctuation">]</span>
-      <span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
-      <span class="hljs-punctuation">[</span>
-        <span class="hljs-number">2763</span><span class="hljs-punctuation">,</span>
-        <span class="hljs-punctuation">[</span>
-          <span class="hljs-number">51.339782</span><span class="hljs-punctuation">,</span>
-          <span class="hljs-number">12.339196166666667</span><span class="hljs-punctuation">,</span>
-          <span class="hljs-number">2.13906</span>
-        <span class="hljs-punctuation">]</span>
-      <span class="hljs-punctuation">]</span>
-    <span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span>
-    <span class="hljs-attr">"time"</span><span class="hljs-punctuation">:</span> <span class="hljs-number">1735683480000</span>
-  <span class="hljs-punctuation">}</span>
-<span class="hljs-punctuation">}</span>
-</span></code></div></div></pre><hr data-start="1857" data-end="1860"><h2 data-start="1862" data-end="1877">Architecture</h2><p data-start="1879" data-end="1956">The project is structured as a monorepo with two primary NestJS applications:</p><ul data-start="1958" data-end="2360"><li data-start="1958" data-end="2077"><p data-start="1960" data-end="1979"><strong data-start="1960" data-end="1976">Producer App</strong>:</p><ul data-start="1982" data-end="2077"><li data-start="1982" data-end="2012">Generates sample x-ray data.</li><li data-start="2015" data-end="2077">Publishes x-ray messages to a RabbitMQ queue (named "xray").</li></ul></li><li data-start="2079" data-end="2360"><p data-start="2081" data-end="2097"><strong data-start="2081" data-end="2094">Panto App</strong>:</p><ul data-start="2100" data-end="2360"><li data-start="2100" data-end="2139">Listens to the RabbitMQ "xray" queue.</li><li data-start="2142" data-end="2241">Processes the incoming data (e.g., extracting deviceId, timestamp, data length, and data volume).</li><li data-start="2244" data-end="2282">Stores processed records in MongoDB.</li><li data-start="2285" data-end="2360">Provides REST API endpoints to perform CRUD operations and data analysis.</li></ul></li></ul><p data-start="2362" data-end="2419">These applications interact with two additional services:</p><ul data-start="2423" data-end="2526"><li data-start="2423" data-end="2468"><strong data-start="2425" data-end="2437">RabbitMQ</strong>: Acts as the messaging broker.</li><li data-start="2469" data-end="2526"><strong data-start="2471" data-end="2482">MongoDB</strong>: Stores the processed x-ray data (signals).</li></ul><hr data-start="2528" data-end="2531"><h2 data-start="2533" data-end="2546">Components</h2><ul data-start="2548" data-end="3020"><li data-start="2548" data-end="2652"><p data-start="2550" data-end="2562"><strong data-start="2550" data-end="2562">Producer</strong></p><ul data-start="2565" data-end="2652"><li data-start="2565" data-end="2585">Built with NestJS.</li><li data-start="2588" data-end="2616">Simulates IoT device data.</li><li data-start="2619" data-end="2652">Publishes messages to RabbitMQ.</li></ul></li><li data-start="2654" data-end="2819"><p data-start="2656" data-end="2665"><strong data-start="2656" data-end="2665">Panto</strong></p><ul data-start="2668" data-end="2819"><li data-start="2668" data-end="2688">Built with NestJS.</li><li data-start="2691" data-end="2723">Processes incoming x-ray data.</li><li data-start="2726" data-end="2751">Stores data in MongoDB.</li><li data-start="2754" data-end="2816">Exposes REST API endpoints for data retrieval and filtering.</li></ul></li><li data-start="2820" data-end="2933"><p data-start="2822" data-end="2834"><strong data-start="2822" data-end="2834">RabbitMQ</strong></p><ul data-start="2837" data-end="2933"><li data-start="2837" data-end="2885">Provides messaging between Producer and Panto.</li><li data-start="2888" data-end="2933">Uses the "xray" queue to transmit messages.</li></ul></li><li data-start="2935" data-end="3020"><p data-start="2937" data-end="2948"><strong data-start="2937" data-end="2948">MongoDB</strong></p><ul data-start="2951" data-end="3020"><li data-start="2951" data-end="3020">Hosts the database where processed signals (x-ray data) are stored.</li></ul></li></ul><hr data-start="3022" data-end="3025"><h2 data-start="3027" data-end="3039">Data Flow</h2><ol data-start="3041" data-end="3627"><li data-start="3041" data-end="3169"><p data-start="3044" data-end="3169"><strong data-start="3044" data-end="3063">Data Generation</strong>:<br data-start="3064" data-end="3067">The <strong data-start="3074" data-end="3086">Producer</strong> app generates sample x-ray data and sends it to RabbitMQ using a designated queue.</p></li><li data-start="3171" data-end="3275"><p data-start="3174" data-end="3275"><strong data-start="3174" data-end="3197">Message Consumption</strong>:<br data-start="3198" data-end="3201">The <strong data-start="3208" data-end="3217">Panto</strong> app consumes the messages from the RabbitMQ "xray" queue.</p></li><li data-start="3277" data-end="3490"><p data-start="3280" data-end="3490"><strong data-start="3280" data-end="3299">Data Processing</strong>:<br data-start="3300" data-end="3303">The Panto app processes the x-ray data by extracting essential information (e.g., deviceId, timestamp, data length, and volume) and then stores it in the signals collection in MongoDB.</p></li><li data-start="3492" data-end="3627"><p data-start="3495" data-end="3627"><strong data-start="3495" data-end="3512">Data Exposure</strong>:<br data-start="3513" data-end="3516">The Panto app exposes REST API endpoints to perform CRUD operations and data analysis on the stored signals.</p></li></ol><hr data-start="3629" data-end="3632"><h2 data-start="3634" data-end="3650">Prerequisites</h2><ul data-start="3652" data-end="3841"><li data-start="3652" data-end="3699"><a data-start="3654" data-end="3699" rel="noopener" target="_new">Docker</a></li><li data-start="3700" data-end="3760"><a data-start="3702" data-end="3760" rel="noopener" target="_new">Docker Compose</a></li><li data-start="3761" data-end="3841">(Optional) <a data-start="3774" data-end="3804" rel="noopener" target="_new" href="https://nodejs.org/">Node.js</a> for local development without Docker</li></ul><hr data-start="3843" data-end="3846"><h2 data-start="3848" data-end="3864">Setup and Run</h2><h3 data-start="3866" data-end="3890">Using Docker Compose</h3><ol data-start="3892" data-end="4559"><li data-start="3892" data-end="3998"><p data-start="3895" data-end="3920"><strong data-start="3895" data-end="3920">Clone the repository:</strong></p><pre class="!overflow-visible" data-start="3925" data-end="3998"><div class="contain-inline-size rounded-md border-[0.5px] border-token-border-medium relative bg-token-sidebar-surface-primary dark:bg-gray-950"><div class="flex items-center text-token-text-secondary px-4 py-2 text-xs font-sans justify-between rounded-t-[5px] h-9 bg-token-sidebar-surface-primary dark:bg-token-main-surface-secondary select-none"></div><div class="sticky top-9 md:top-[5.75rem]"><div class="absolute bottom-0 right-2 flex h-9 items-center"><div class="flex items-center rounded bg-token-sidebar-surface-primary px-2 font-sans text-xs text-token-text-secondary dark:bg-token-main-surface-secondary"><span class="" data-state="closed"></span><span class="" data-state="closed"></span></div></div></div><div class="overflow-y-auto p-4" dir="ltr"><code class="!whitespace-pre language-"><span>git <span class="hljs-built_in">clone</span> &lt;repository-url&gt;
-<span class="hljs-built_in">cd</span> &lt;repository-directory&gt;
-</span></code></div></div></pre></li><li data-start="4000" data-end="4290"><p data-start="4003" data-end="4029"><strong data-start="4003" data-end="4029">Environment Variables:</strong></p><p data-start="4034" data-end="4087">The services use the following environment variables:</p><ul data-start="4091" data-end="4234"><li data-start="4091" data-end="4138"><code data-start="4093" data-end="4107">RABBITMQ_URI</code> (e.g., <code data-start="4115" data-end="4137">amqp://rabbitmq:5672</code>)</li><li data-start="4142" data-end="4175"><code data-start="4144" data-end="4160">RABBITMQ_QUEUE</code> (e.g., <code data-start="4168" data-end="4174">xray</code>)</li><li data-start="4179" data-end="4234"><code data-start="4181" data-end="4194">MONGODB_URI</code> (e.g., <code data-start="4202" data-end="4233">mongodb://mongodb:27017/panto</code>)</li></ul><p data-start="4239" data-end="4290">These variables are set in the Docker Compose file.</p></li><li data-start="4292" data-end="4367"><p data-start="4295" data-end="4319"><strong data-start="4295" data-end="4319">Run the application:</strong></p><pre class="!overflow-visible" data-start="4324" data-end="4367"><div class="contain-inline-size rounded-md border-[0.5px] border-token-border-medium relative bg-token-sidebar-surface-primary dark:bg-gray-950"><div class="flex items-center text-token-text-secondary px-4 py-2 text-xs font-sans justify-between rounded-t-[5px] h-9 bg-token-sidebar-surface-primary dark:bg-token-main-surface-secondary select-none"></div><div class="sticky top-9 md:top-[5.75rem]"><div class="absolute bottom-0 right-2 flex h-9 items-center"><div class="flex items-center rounded bg-token-sidebar-surface-primary px-2 font-sans text-xs text-token-text-secondary dark:bg-token-main-surface-secondary"><span class="" data-state="closed"></span></div></div></div><div class="overflow-y-auto p-4" dir="ltr"><code class="!whitespace-pre language-"><span>docker-compose up --build
-</span></code></div></div></pre></li><li data-start="4369" data-end="4559"><p data-start="4372" data-end="4390"><strong data-start="4372" data-end="4390">Service Ports:</strong></p><ul data-start="4395" data-end="4559"><li data-start="4395" data-end="4461"><strong data-start="4397" data-end="4409">RabbitMQ</strong>: AMQP on port <code data-start="4424" data-end="4430">5672</code>, Management UI on port <code data-start="4454" data-end="4461">15672</code></li><li data-start="4465" data-end="4492"><strong data-start="4467" data-end="4478">MongoDB</strong>: Port <code data-start="4485" data-end="4492">27017</code></li><li data-start="4496" data-end="4524"><strong data-start="4498" data-end="4511">Panto App</strong>: Port <code data-start="4518" data-end="4524">3001</code></li><li data-start="4528" data-end="4559"><strong data-start="4530" data-end="4546">Producer App</strong>: Port <code data-start="4553" data-end="4559">3002</code></li></ul></li></ol><h3 data-start="4561" data-end="4582">Local Development</h3><ol data-start="4584" data-end="4908"><li data-start="4584" data-end="4646"><p data-start="4587" data-end="4612"><strong data-start="4587" data-end="4612">Install dependencies:</strong></p><pre class="!overflow-visible" data-start="4617" data-end="4646"><div class="contain-inline-size rounded-md border-[0.5px] border-token-border-medium relative bg-token-sidebar-surface-primary dark:bg-gray-950"><div class="flex items-center text-token-text-secondary px-4 py-2 text-xs font-sans justify-between rounded-t-[5px] h-9 bg-token-sidebar-surface-primary dark:bg-token-main-surface-secondary select-none"></div><div class="sticky top-9 md:top-[5.75rem]"><div class="absolute bottom-0 right-2 flex h-9 items-center"><div class="flex items-center rounded bg-token-sidebar-surface-primary px-2 font-sans text-xs text-token-text-secondary dark:bg-token-main-surface-secondary"><span class="" data-state="closed"></span><span class="" data-state="closed"></span></div></div></div><div class="overflow-y-auto p-4" dir="ltr"><code class="!whitespace-pre language-"><span>npm install
-</span></code></div></div></pre></li><li data-start="4648" data-end="4908"><p data-start="4651" data-end="4687"><strong data-start="4651" data-end="4687">Run the individual applications:</strong></p><p data-start="4692" data-end="4702">For Panto:</p><pre class="!overflow-visible" data-start="4706" data-end="4743"><div class="contain-inline-size rounded-md border-[0.5px] border-token-border-medium relative bg-token-sidebar-surface-primary dark:bg-gray-950"><div class="flex items-center text-token-text-secondary px-4 py-2 text-xs font-sans justify-between rounded-t-[5px] h-9 bg-token-sidebar-surface-primary dark:bg-token-main-surface-secondary select-none"></div><div class="sticky top-9 md:top-[5.75rem]"><div class="absolute bottom-0 right-2 flex h-9 items-center"><div class="flex items-center rounded bg-token-sidebar-surface-primary px-2 font-sans text-xs text-token-text-secondary dark:bg-token-main-surface-secondary"><span class="" data-state="closed"></span></div></div></div><div class="overflow-y-auto p-4" dir="ltr"><code class="!whitespace-pre language-"><span>npm run start:panto
-</span></code></div></div></pre><p data-start="4748" data-end="4761">For Producer:</p><pre class="!overflow-visible" data-start="4765" data-end="4805"><div class="contain-inline-size rounded-md border-[0.5px] border-token-border-medium relative bg-token-sidebar-surface-primary dark:bg-gray-950"><div class="flex items-center text-token-text-secondary px-4 py-2 text-xs font-sans justify-between rounded-t-[5px] h-9 bg-token-sidebar-surface-primary dark:bg-token-main-surface-secondary select-none"></div><div class="sticky top-9 md:top-[5.75rem]"><div class="absolute bottom-0 right-2 flex h-9 items-center"><div class="flex items-center rounded bg-token-sidebar-surface-primary px-2 font-sans text-xs text-token-text-secondary dark:bg-token-main-surface-secondary"><span class="" data-state="closed"></span></div></div></div><div class="overflow-y-auto p-4" dir="ltr"><code class="!whitespace-pre language-"><span>npm run start:producer
-</span></code></div></div></pre><p data-start="4810" data-end="4908">Make sure to configure your local environment variables appropriately (you can use a <code data-start="4895" data-end="4901">.env</code> file).</p></li></ol><hr data-start="4910" data-end="4913"><h2 data-start="4915" data-end="4935">API Documentation</h2><p data-start="4937" data-end="5070">The Panto application exposes a RESTful API for accessing processed x-ray data. Swagger documentation is integrated and available at:</p><pre class="!overflow-visible" data-start="5072" data-end="5105"><div class="contain-inline-size rounded-md border-[0.5px] border-token-border-medium relative bg-token-sidebar-surface-primary dark:bg-gray-950"><div class="flex items-center text-token-text-secondary px-4 py-2 text-xs font-sans justify-between rounded-t-[5px] h-9 bg-token-sidebar-surface-primary dark:bg-token-main-surface-secondary select-none"></div><div class="sticky top-9 md:top-[5.75rem]"><div class="absolute bottom-0 right-2 flex h-9 items-center"><div class="flex items-center rounded bg-token-sidebar-surface-primary px-2 font-sans text-xs text-token-text-secondary dark:bg-token-main-surface-secondary"><span class="" data-state="closed"></span></div></div></div><div class="overflow-y-auto p-4" dir="ltr"><code class="!whitespace-pre"><span>http://localhost:3001/api
-</span></code></div></div></pre><p data-start="5107" data-end="5187">You can use Swagger to test CRUD operations and filtering endpoints for signals.</p>
-  
-  
-  <hr data-start="5189" data-end="5192">
-  
-  <p data-start="161" data-end="265">This project includes unit tests for key components <strong data-start="225" data-end="234">Panto</strong> .</p>
-  <p data-start="290" data-end="351">From the root of the repository, you can run all tests using:</p>
-  
-  <pre class="!overflow-visible" data-start="353" data-end="377"><div class="contain-inline-size rounded-md border-[0.5px] border-token-border-medium relative bg-token-sidebar-surface-primary dark:bg-gray-950"><div class="flex items-center text-token-text-secondary px-4 py-2 text-xs font-sans justify-between rounded-t-[5px] h-9 bg-token-sidebar-surface-primary dark:bg-token-main-surface-secondary select-none"></div><div class="sticky top-9 md:top-[5.75rem]"><div class="absolute bottom-0 right-2 flex h-9 items-center"><div class="flex items-center rounded bg-token-sidebar-surface-primary px-2 font-sans text-xs text-token-text-secondary dark:bg-token-main-surface-secondary"><span class="" data-state="closed"></span></div></div></div><div class="overflow-y-auto p-4" dir="ltr"><code class="!whitespace-pre language-"><span>npm run <span class="hljs-built_in">test</span>
-</span></code></div></div></pre>
+# PANTOhealth Test
 
+This project is a NestJS microservice monorepo that processes x-ray data from IoT devices. It consists of two main applications:
 
-  <h2 data-start="5194" data-end="5214">Project Structure</h2><pre class="!overflow-visible" data-start="5216" data-end="5516"><div class="contain-inline-size rounded-md border-[0.5px] border-token-border-medium relative bg-token-sidebar-surface-primary dark:bg-gray-950"><div class="flex items-center text-token-text-secondary px-4 py-2 text-xs font-sans justify-between rounded-t-[5px] h-9 bg-token-sidebar-surface-primary dark:bg-token-main-surface-secondary select-none">css</div><div class="sticky top-9 md:top-[5.75rem]"><div class="absolute bottom-0 right-2 flex h-9 items-center"><div class="flex items-center rounded bg-token-sidebar-surface-primary px-2 font-sans text-xs text-token-text-secondary dark:bg-token-main-surface-secondary"><span class="" data-state="closed"></span></div></div></div><div class="overflow-y-auto p-4" dir="ltr"><code class="!whitespace-pre"><span>.
+- **Producer**: Simulates IoT devices by generating x-ray data and sending it to RabbitMQ.
+- **Panto**: Consumes x-ray data from RabbitMQ, processes and stores the data in MongoDB, and provides a REST API for data retrieval and analysis.
+
+## Table of Contents
+- [Project Overview](#project-overview)
+- [Architecture](#architecture)
+- [Components](#components)
+- [Data Flow](#data-flow)
+- [Prerequisites](#prerequisites)
+- [Setup and Run](#setup-and-run)
+  - [Using Docker Compose](#using-docker-compose)
+  - [Local Development](#local-development)
+- [API Documentation](#api-documentation)
+- [Swagger Integration](#swagger-integration)
+- [Testing](#testing)
+- [Project Structure](#project-structure)
+- [Assignment Requirements](#assignment-requirements)
+- [License](#license)
+
+## Project Overview
+This NestJS-based IoT Data Management System receives x-ray data messages sent by IoT devices, processes the information, and stores the results in a MongoDB collection. The processed data can then be accessed and analyzed via a RESTful API. RabbitMQ is used as the messaging backbone to decouple the data producer from the data processing application.
+
+### Sample x-ray data format:
+```json
+{
+  "66bb584d4ae73e488c30a072": {
+    "data": [
+      [
+        762,
+        [
+          51.339764,
+          12.339223833333334,
+          1.2038000000000002
+        ]
+      ],
+      [
+        1766,
+        [
+          51.33977733333333,
+          12.339211833333334,
+          1.531604
+        ]
+      ],
+      [
+        2763,
+        [
+          51.339782,
+          12.339196166666667,
+          2.13906
+        ]
+      ]
+    ],
+    "time": 1735683480000
+  }
+}
+```
+
+## Architecture
+The project is structured as a monorepo with two primary NestJS applications:
+
+### **Producer App**
+- Generates sample x-ray data.
+- Publishes x-ray messages to a RabbitMQ queue (named "xray").
+
+### **Panto App**
+- Listens to the RabbitMQ "xray" queue.
+- Processes the incoming data (e.g., extracting deviceId, timestamp, data length, and data volume).
+- Stores processed records in MongoDB.
+- Provides REST API endpoints to perform CRUD operations and data analysis.
+
+These applications interact with two additional services:
+
+- **RabbitMQ**: Acts as the messaging broker.
+- **MongoDB**: Stores the processed x-ray data (signals).
+
+## Components
+### **Producer**
+- Built with NestJS.
+- Simulates IoT device data.
+- Publishes messages to RabbitMQ.
+
+### **Panto**
+- Built with NestJS.
+- Processes incoming x-ray data.
+- Stores data in MongoDB.
+- Exposes REST API endpoints for data retrieval and filtering.
+
+### **RabbitMQ**
+- Provides messaging between Producer and Panto.
+- Uses the "xray" queue to transmit messages.
+
+### **MongoDB**
+- Hosts the database where processed signals (x-ray data) are stored.
+
+## Data Flow
+1. **Data Generation**:
+   - The Producer app generates sample x-ray data and sends it to RabbitMQ using a designated queue.
+
+2. **Message Consumption**:
+   - The Panto app consumes the messages from the RabbitMQ "xray" queue.
+
+3. **Data Processing**:
+   - The Panto app processes the x-ray data by extracting essential information (e.g., deviceId, timestamp, data length, and volume) and then stores it in the signals collection in MongoDB.
+
+4. **Data Exposure**:
+   - The Panto app exposes REST API endpoints to perform CRUD operations and data analysis on the stored signals.
+
+## Prerequisites
+- Docker
+- Docker Compose
+- (Optional) Node.js for local development without Docker
+
+## Setup and Run
+### Using Docker Compose
+1. Clone the repository:
+   ```sh
+   git clone <repository-url>
+   cd <repository-directory>
+   ```
+2. Set up environment variables:
+   - **RABBITMQ_URI** (e.g., `amqp://rabbitmq:5672`)
+   - **RABBITMQ_QUEUE** (e.g., `xray`)
+   - **MONGODB_URI** (e.g., `mongodb://mongodb:27017/panto`)
+   
+   These variables are set in the Docker Compose file.
+
+3. Run the application:
+   ```sh
+   docker-compose up --build
+   ```
+4. Service Ports:
+   - RabbitMQ: AMQP on port `5672`, Management UI on port `15672`
+   - MongoDB: Port `27017`
+   - Panto App: Port `3001`
+   - Producer App: Port `3002`
+
+### Local Development
+1. Install dependencies:
+   ```sh
+   npm install
+   ```
+2. Run the individual applications:
+   - **For Panto**:
+     ```sh
+     npm run start:panto
+     ```
+   - **For Producer**:
+     ```sh
+     npm run start:producer
+     ```
+   Make sure to configure your local environment variables appropriately (you can use a `.env` file).
+
+## API Documentation
+The Panto application exposes a RESTful API for accessing processed x-ray data. Swagger documentation is integrated and available at:
+
+### **Swagger Integration**
+- Access the API documentation via Swagger UI:
+  ```
+  http://localhost:3001/api-doc
+  ```
+- You can use Swagger to test CRUD operations and filtering endpoints for signals.
+
+## Testing
+This project includes unit tests for key components of the Panto application.
+
+From the root of the repository, you can run all tests using:
+```sh
+npm run test
+```
+
+## Project Structure
+```
+.
 ├── apps
 │   ├── panto
-│   │   ├── <span class="hljs-attribute">src</span>
-│   │   │   ├── <span class="hljs-selector-tag">main</span><span class="hljs-selector-class">.ts</span>
+│   │   ├── src
+│   │   │   ├── main.ts
 │   │   │   └── modules/...
-│   │   └── Dockerfile<span class="hljs-selector-class">.panto</span>
+│   │   └── Dockerfile.panto
 │   └── producer
-│       ├── <span class="hljs-attribute">src</span>
-│       │   ├── <span class="hljs-selector-tag">main</span><span class="hljs-selector-class">.ts</span>
+│       ├── src
+│       │   ├── main.ts
 │       │   └── modules/...
-│       └── Dockerfile<span class="hljs-selector-class">.producer</span>
-├── docker-compose<span class="hljs-selector-class">.yml</span>
-├── package<span class="hljs-selector-class">.json</span>
-└── README<span class="hljs-selector-class">.md</span>
-</span></code></div></div></pre><hr data-start="5518" data-end="5521"><h2 data-start="5523" data-end="5549">Assignment Requirements</h2><p data-start="5551" data-end="5620">This project fulfills the following requirements from the assignment:</p><ol data-start="5622" data-end="6591"><li data-start="5622" data-end="5803"><p data-start="5625" data-end="5657"><strong data-start="5625" data-end="5656">RabbitMQ Module Integration</strong>:</p><ul data-start="5661" data-end="5803"><li data-start="5661" data-end="5700">Establishes a connection to RabbitMQ.</li><li data-start="5704" data-end="5749">Asserts the required queues (e.g., "xray").</li><li data-start="5753" data-end="5803">Implements a consumer for processing x-ray data.</li></ul></li><li data-start="5805" data-end="6062"><p data-start="5808" data-end="5840"><strong data-start="5808" data-end="5839">Data Processing and Storage</strong>:</p><ul data-start="5844" data-end="6062"><li data-start="5844" data-end="5896">Implements a Mongoose schema/model for x-ray data.</li><li data-start="5900" data-end="5997">Processes incoming x-ray messages to extract deviceId, timestamp, data length, and data volume.</li><li data-start="6001" data-end="6062">Stores processed records in the MongoDB signals collection.</li></ul></li><li data-start="6064" data-end="6236"><p data-start="6067" data-end="6087"><strong data-start="6067" data-end="6086">API Development</strong>:</p><ul data-start="6091" data-end="6236"><li data-start="6091" data-end="6155">Provides RESTful API endpoints for CRUD operations on signals.</li><li data-start="6159" data-end="6236">Includes optional endpoints for data retrieval with filtering capabilities.</li></ul></li><li data-start="6238" data-end="6374"><p data-start="6241" data-end="6266"><strong data-start="6241" data-end="6265">Producer Application</strong>:</p><ul data-start="6270" data-end="6374"><li data-start="6270" data-end="6332">A separate NestJS application/module simulating IoT devices.</li><li data-start="6336" data-end="6374">Sends sample x-ray data to RabbitMQ.</li></ul></li><li data-start="6376" data-end="6591"><p data-start="6379" data-end="6397"><strong data-start="6379" data-end="6396">Dockerization</strong>:</p><ul data-start="6401" data-end="6591"><li data-start="6401" data-end="6482">The entire application (both Producer and Panto) is containerized using Docker.</li><li data-start="6486" data-end="6591">A <code data-start="6490" data-end="6510">docker-compose.yml</code> file is provided to orchestrate RabbitMQ, MongoDB, Panto, and Producer services.</li></ul></li></ol><hr data-start="6593" data-end="6596"><h2 data-start="6598" data-end="6608">License</h2>
+│       └── Dockerfile.producer
+├── docker-compose.yml
+├── package.json
+└── README.md
+```
+
+## Assignment Requirements
+This project fulfills the following requirements:
+- **RabbitMQ Module Integration**
+  - Establishes a connection to RabbitMQ.
+  - Asserts the required queues (e.g., "xray").
+  - Implements a consumer for processing x-ray data.
+- **Data Processing and Storage**
+  - Implements a Mongoose schema/model for x-ray data.
+  - Extracts key information and stores it in MongoDB.
+- **API Development**
+  - Provides RESTful API endpoints with CRUD and filtering capabilities.
+- **Producer Application**
+  - Simulates IoT devices and sends sample x-ray data.
+- **Dockerization**
+  - Fully containerized with Docker Compose for easy deployment.
+
+

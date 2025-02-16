@@ -160,7 +160,7 @@ The Panto application exposes a RESTful API for accessing processed x-ray data. 
 ### **Swagger Integration**
 - Access the API documentation via Swagger UI:
   ```
-  http://localhost:3001/api-doc
+  http://localhost:3001/api
   ```
 - You can use Swagger to test CRUD operations and filtering endpoints for signals.
 
